@@ -19,12 +19,12 @@ export function AuthContextProvider(props) {
   }, []);
 
   function logoutHandler() {
-    localStorage.removeItem('isLoggedIn')
+    localStorage.removeItem('isLoggedIn');
     setIsLoggedIn(false)
   }
 
   function loginHandler() {
-    localStorage.setItem('isLoggedIn')
+    localStorage.setItem('isLoggedIn', '1');
     setIsLoggedIn(true)
   } 
 
