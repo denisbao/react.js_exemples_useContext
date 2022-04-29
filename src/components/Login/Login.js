@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useReducer, useContext } from 'react';
+import { useRef } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
 import AuthContext from '../context/auth-context';
-import { Input } from '../UI/Input/Input';
+import Input from '../UI/Input/Input';
 
 // The dispatch function can be created outside the componet when no information
 // generated inside the componet funcion is used in it.
@@ -29,6 +30,8 @@ const passwordReducer = (state, action) => {
 }
 
 const Login = (props) => {
+  const emailInputRef = useRef()
+  const passwordInputRef = useRef()
   const authContext = useContext(AuthContext)
   const [formIsValid, setFormIsValid] = useState(false);
   const [emailState, dispatchEmail] = useReducer(
@@ -85,13 +88,20 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    authContext.onLogin(emailState.value, passwordState.value);
+    if (formIsValid) {
+      authContext.onLogin(emailState.value, passwordState.value);
+    } else if (!emailIsValid) {
+      emailInputRef.current.focus()
+    } else {
+      passwordInputRef.current.focus()
+    }
   };
 
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
         <Input 
+          ref={emailInputRef}
           id="email"
           type="email"
           label="E-mail"
@@ -101,6 +111,7 @@ const Login = (props) => {
           onBlur={validateEmailHandler}
         />
         <Input 
+          ref={passwordInputRef}
           id="password"
           type="password"
           label="Password"
@@ -110,7 +121,7 @@ const Login = (props) => {
           onBlur={validatePasswordHandler}
         />
         <div className={classes.actions}>
-          <Button type="submit" className={classes.btn} disabled={!formIsValid}>
+          <Button type="submit" className={classes.btn}>
             Login
           </Button>
         </div>
